@@ -1,0 +1,1137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>谢周林 - Web 前端开发工程师</title>
+    <style>
+      :root {
+        --accent: #00b894;
+        --text: #2f3437;
+        --muted: #7b8187;
+        --line: #edf0f2;
+        --paper: #fff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 28px;
+        background: #e9ecef;
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+          "Noto Sans CJK SC", Arial, sans-serif;
+        line-height: 1.58;
+      }
+
+      .resume {
+        display: grid;
+        gap: 28px;
+        justify-content: center;
+      }
+
+      .page {
+        position: relative;
+        width: 794px;
+        min-height: 1122px;
+        padding: 84px 48px 68px;
+        background: var(--paper);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+        outline: none;
+      }
+
+      .page:focus {
+        box-shadow: 0 8px 28px rgba(0, 184, 148, 0.22);
+      }
+
+      .top {
+        display: grid;
+        grid-template-columns: 1fr 150px;
+        gap: 24px;
+        align-items: start;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--accent);
+      }
+
+      .name-line {
+        display: flex;
+        align-items: baseline;
+        gap: 18px;
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        margin: 0;
+        color: #121619;
+        font-size: 38px;
+        font-weight: 500;
+        letter-spacing: 2px;
+        line-height: 1;
+      }
+
+      .target {
+        color: #777;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+
+      .info,
+      .contact {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .contact {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .avatar {
+        display: block;
+        width: 72px;
+        height: 72px;
+        margin-left: auto;
+        object-fit: cover;
+        object-position: center 18%;
+      }
+
+      a,
+      .green {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .summary {
+        margin: 18px 0 0;
+        padding: 12px 14px;
+        border: 1px solid rgba(0, 184, 148, 0.22);
+        border-left: 3px solid var(--accent);
+        background: rgba(0, 184, 148, 0.04);
+      }
+
+      .summary-title {
+        margin: 0 0 6px;
+        color: #333;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .summary ul {
+        margin-bottom: 0;
+      }
+
+      .summary li {
+        margin-bottom: 4px;
+      }
+
+      .section-title {
+        display: grid;
+        align-items: center;
+        margin: 42px 0 18px;
+        color: #333;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .section-title.dual {
+        grid-template-columns: 1fr 1.08fr;
+        gap: 36px;
+      }
+
+      .section-title.single,
+      .section-heading {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 36px;
+      }
+
+      .section-title.single::before,
+      .section-title.single::after,
+      .section-heading::before,
+      .section-heading::after {
+        content: "";
+        height: 1px;
+        background: var(--line);
+      }
+
+      .two-columns {
+        display: grid;
+        grid-template-columns: 1fr 1.08fr;
+        gap: 36px;
+      }
+
+      .stacked-section {
+        margin-top: 28px;
+      }
+
+      .stacked-section .section-title.single {
+        margin-top: 0;
+      }
+
+      .work-section {
+        display: grid;
+        gap: 26px;
+      }
+
+      .work-section .job-head {
+        max-width: 430px;
+      }
+
+      .work-summary {
+        margin-bottom: 12px;
+      }
+
+      .company-projects {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 30px;
+      }
+
+      .project-meta {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 400;
+        white-space: nowrap;
+      }
+
+      .company-projects .role::before {
+        content: "";
+        flex: 0 0 auto;
+        width: 16px;
+        height: 13px;
+        border: 1px solid var(--accent);
+        border-radius: 3px;
+        background:
+          linear-gradient(var(--accent), var(--accent)) 0 0 / 100% 3px no-repeat,
+          linear-gradient(var(--accent), var(--accent)) 4px 6px / 8px 1px
+            no-repeat,
+          linear-gradient(var(--accent), var(--accent)) 4px 9px / 6px 1px
+            no-repeat,
+          rgba(0, 184, 148, 0.08);
+      }
+
+      .company-projects ul {
+        margin-bottom: 10px;
+      }
+
+      .company-projects li {
+        margin-bottom: 5px;
+      }
+
+      .infra-section {
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      .infra-title {
+        margin: 0 0 8px;
+        color: #333;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .infra-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 30px;
+      }
+
+      .infra-list ul {
+        margin-bottom: 0;
+      }
+
+      .infra-list li {
+        margin-bottom: 6px;
+      }
+
+      .projects-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 36px;
+      }
+
+      .job-head {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        margin: 0 0 12px;
+        font-size: 12px;
+        line-height: 1.25;
+      }
+
+      .logo {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+        border-radius: 4px;
+      }
+
+      .logo.wide {
+        width: 72px;
+        height: 28px;
+        border-radius: 0;
+        object-fit: contain;
+      }
+
+      .company {
+        font-weight: 700;
+      }
+
+      .position {
+        margin-top: 2px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .date {
+        margin-top: 2px;
+        font-weight: 700;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 1px 7px;
+        border: 1px solid var(--accent);
+        border-radius: 2px;
+        color: var(--accent);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      p {
+        margin: 0 0 9px;
+        font-size: 12px;
+      }
+
+      .intro {
+        margin-bottom: 18px;
+      }
+
+      .project,
+      .role {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 18px 0 7px;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.3;
+      }
+
+      .project:first-of-type,
+      .role:first-of-type {
+        margin-top: 0;
+      }
+
+      .mini-icon {
+        flex: 0 0 auto;
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+        object-fit: cover;
+      }
+
+      ul {
+        margin: 0 0 8px;
+        padding-left: 16px;
+        font-size: 12px;
+        list-style-type: square;
+      }
+
+      li {
+        margin: 0 0 7px;
+        padding-left: 3px;
+      }
+
+      li::marker {
+        color: #333;
+        font-size: 0.72em;
+      }
+
+      .page-2,
+      .page-3 {
+        padding-top: 42px;
+      }
+
+      .page-2 .two-columns,
+      .page-3 .two-columns {
+        margin-top: 0;
+      }
+
+      .skill-title {
+        margin: 22px 0 8px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .skill-title:first-child {
+        margin-top: 0;
+      }
+
+      .continued {
+        max-width: 360px;
+      }
+
+      .skill-section-title {
+        margin-top: 42px;
+      }
+
+      [contenteditable="true"] {
+        caret-color: var(--accent);
+      }
+
+      @media print {
+        body {
+          padding: 0;
+          background: #fff;
+        }
+
+        .resume {
+          display: block;
+        }
+
+        .page {
+          width: 210mm;
+          min-height: 297mm;
+          margin: 0;
+          box-shadow: none;
+          page-break-after: always;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="resume">
+      <section class="page" contenteditable="true" aria-label="简历第一页">
+        <header class="top">
+          <div>
+            <div class="name-line">
+              <h1>谢周林</h1>
+              <div class="target">意向岗位： Web 前端开发工程师</div>
+            </div>
+            <p class="info">
+              男 / 1996.12<br />
+              东华理工大学 · 软件工程<br />
+              本科 / 2019 年毕业<br />
+              社区 / 博客链接: <span class="green">个人博客</span> |
+              <a class="green" href="https://github.com/JoeWrights"
+                >GitHub 主页</a
+              >
+            </p>
+          </div>
+          <div>
+            <img
+              class="avatar"
+              src="resume-assets/image-06.jpeg"
+              alt="谢周林头像"
+            />
+            <p class="contact">
+              我的技术博客<br />
+              GitHub - JoeWrights<br />
+              1035208578@qq.com<br />
+              15770704025
+            </p>
+          </div>
+        </header>
+
+        <section class="summary" aria-label="个人优势">
+          <h2 class="summary-title">个人优势</h2>
+          <ul>
+            <li>
+              6 年前端开发经验，长期负责企业信息化中后台、HR 业务系统、H5
+              与活动页建设，具备从 0 到 1 交付复杂业务系统的经验。
+            </li>
+            <li>
+              主力技术栈为 React、Vue、TypeScript、Qiankun、Monorepo
+              与前端工程化，熟悉复杂表单、权限、审批流、报表、可视化和多端适配场景。
+            </li>
+            <li>
+              参与沉淀
+              <span class="green">@hg-info/*</span>
+              前端基建体系，覆盖组件库、脚手架、工程规范、发布工具、地图/组织可视化组件与
+              Sentry 告警能力，支撑多业务线复用。
+            </li>
+            <li>
+              具备 AI Agent 工程化落地经验，推动 MCP Tool 与 Cursor Rules /
+              Skills 在团队实践，支撑构建、部署与研发规范执行闭环，提升交付效率与协作一致性。
+            </li>
+          </ul>
+        </section>
+
+        <div class="stacked-section">
+          <div class="section-title single"><span>工作经历</span></div>
+
+          <div class="work-section">
+            <article>
+              <div class="job-head">
+                <img
+                  class="logo wide"
+                  src="../hg-visitors/src/assets/svg/hypergryph.svg"
+                  alt="鹰角网络"
+                />
+                <div>
+                  <div class="company">鹰角网络</div>
+                  <div class="position">Web 全栈开发工程师</div>
+                  <div class="date">2022.04 - 至今</div>
+                </div>
+                <span class="tag">工作</span>
+              </div>
+
+              <p class="intro">
+                前期参与游戏活动页与海外官网建设，后续主要面向人事、行政、IT
+                等业务方建设内部信息化系统与前端工程化基建，覆盖招聘、办公地图、人事工作台、访客、员工自助、入职采集、权限、外包与资产等多个业务域；多数项目承担从
+                0 到 1
+                的前端落地，推动线下流程线上化、跨部门协作标准化，并沉淀组件库、脚手架、工程规范、地图/可视化组件等
+                <span class="green">@hg-info/*</span>
+                基础能力，支撑多业务线复用。
+              </p>
+
+              <div class="company-projects">
+                <div>
+                  <div class="role">
+                    游戏活动页与海外官网
+                    <span class="project-meta"
+                      >React / TypeScript / Next.js / SSG</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong>参与《明日方舟》活动专题页与
+                      Gryph Frontier
+                      海外官网建设，负责高还原视觉动效、整屏交互、PC/H5
+                      适配、双语静态站点与海外合规页面落地。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong
+                      >沉淀活动页和品牌官网通用交付方案，通过静态导出、CDN
+                      发布、字体子集化、Nginx gzip、分享/Analytics
+                      接入，提升活动页面交付效率并支撑海外产品展示与传播数据追踪。
+                    </li>
+                  </ul>
+
+                  <div class="role">
+                    鹰角招聘系统
+                    <span class="project-meta"
+                      >React / TypeScript / 从 0 到 1</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong>负责招聘 Offer
+                      全流程前端建设，打通招聘管理端、候选人
+                      OfferLetter、内推、猎头费用结算与移动审批链路，并支持海外静态资源独立部署。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong>面向人事招聘团队打通 Offer
+                      发放、签收、审批、内推与猎头结算链路，支撑约 50 条路由与
+                      5+ 核心业务场景，统一国内外候选人 Offer
+                      体验并减少线下沟通成本。
+                    </li>
+                  </ul>
+
+                  <div class="role">
+                    鹰角办公地图
+                    <span class="project-meta"
+                      >React / TypeScript / X6 / 从 0 到 1</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong
+                      >负责工位管理后台、员工侧地图查询与 @hg-info/office-map
+                      地图组件建设，支持工位绑定、地图编辑、导入导出与报表统计。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong
+                      >面向行政团队将工位维护、员工查询、空间统计和报表管理线上化，基于
+                      AntV X6
+                      沉淀可复用地图能力，支撑工位、部门、楼宇与空间报表等 4+
+                      业务域。
+                    </li>
+                  </ul>
+
+                  <div class="role">
+                    人事工作台
+                    <span class="project-meta"
+                      >React / TypeScript / 微前端基座</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong>参与 HR
+                      工作台微前端基座建设，负责首页驾驶舱、组织档案、组织架构图、数据中心及子应用容器等模块。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong
+                      >面向人事团队统一员工、组织、招聘、补贴等业务入口，通过
+                      Qiankun 承载 入职、招聘、离职、租房补贴等 4+
+                      子应用，并集成 i18n、全局状态、AI 助手与组织可视化能力。
+                    </li>
+                  </ul>
+
+                  <div class="role">
+                    鹰角访客系统
+                    <span class="project-meta"
+                      >React / TypeScript / 从 0 到 1</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong>负责门卫端、访客
+                      H5、员工邀约端前端落地，覆盖邀约、登记、签到、核销、访客状态看板与飞书免登。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong
+                      >面向行政与前台场景打通访客邀约、登记、签到、核销和状态看板，通过共享
+                      visitors-lib 复用核心逻辑，支撑 3
+                      端访客闭环并降低门卫端、员工端、访客端的重复维护成本。
+                    </li>
+                  </ul>
+
+                  <div class="role">
+                    员工自助系统
+                    <span class="project-meta"
+                      >React / TypeScript / Monorepo / 从 0 到 1</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong
+                      >负责员工自助类应用建设，包含员工档案、租房补贴申请、员工家属体检等移动端自助流程。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong
+                      >面向员工与人事团队提供统一自助入口，减少档案、补贴、体检等流程的线下收集与人工流转；基于
+                      Turbo + Rsbuild 沉淀共享包，提升多自助场景复用效率。
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <div class="role">
+                    入职采集系统
+                    <span class="project-meta"
+                      >React / TypeScript / H5 + Admin</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong>负责候选人入职前信息采集 H5、HR
+                      审核后台与 core-hr
+                      入职模块，覆盖多步骤表单、审核确认、入职台账、材料打印与审批流。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong>面向人事入职场景打通候选人、HR
+                      与多部门审批链路，将入职资料采集、审核确认、台账和材料打印线上化，支持
+                      PC/H5/iPad 多端与 i18n，覆盖 core-hr 约 7 条主路径、10+
+                      打印子模块。
+                    </li>
+                  </ul>
+
+                  <div class="role">
+                    权限管理系统
+                    <span class="project-meta"
+                      >React / TypeScript / 统一权限中台</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong>负责 PMP
+                      权限平台前端建设，覆盖用户组、可见权限、应用
+                      RBAC、资源树、API、数据集、权限审核与合规查询。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong>面向 IT
+                      与业务管理员支撑跨应用权限治理，统一用户组、资源树、API、数据集和权限审核流程，系统规模约
+                      60+
+                      路由页面，并通过组织树可视化与规则编辑降低权限配置理解成本。
+                    </li>
+                  </ul>
+
+                  <div class="role">
+                    外包管理系统
+                    <span class="project-meta"
+                      >React / TypeScript / 从 0 到 1</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong
+                      >负责外包人员管理后台，覆盖外包名册、离场流程、权限设置与组织相关能力。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong>面向人事与 IT
+                      权限管理场景，将外包人员入场、在场、离场和权限设置流程线上化，降低线下台账维护成本，并通过组织图能力辅助人员关系管理。
+                    </li>
+                  </ul>
+
+                  <div class="role">
+                    资产管理系统
+                    <span class="project-meta"
+                      >React / TypeScript / 50+ 路由</span
+                    >
+                  </div>
+                  <ul>
+                    <li>
+                      <strong>工作内容：</strong
+                      >负责固定资产管理前端建设，覆盖资产卡片、流转明细、费用承担、财务变更、折旧、处置复核、报表与角色权限。
+                    </li>
+                    <li>
+                      <strong>业务结果：</strong>面向行政、IT
+                      与财务协作场景支撑资产卡片、流转、折旧、处置、报表完整链路，覆盖
+                      5 大业务域、约 50+
+                      路由页面，提升固定资产信息透明度与跨部门处理效率。
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="infra-section">
+                <h2 class="infra-title">前端基建与工程化</h2>
+                <div class="infra-list">
+                  <ul>
+                    <li>
+                      参与建设鹰角信息化
+                      <span class="green">@hg-info/*</span> 前端基建体系，覆盖 B
+                      端组件库、移动端组件、脚手架、发版工具、地图与组织可视化组件，统一人事、行政、IT
+                      多业务系统的组件资产、开发规范、质量校验与版本发布闭环。
+                    </li>
+                    <li>
+                      沉淀 <span class="green">@hg-info/components</span> B
+                      端组件库，封装 Table、EditableForm、QueryBlock、Layout 等
+                      40+ 通用组件与 10+ Hooks，被 Offer、权限、资产、访客等 20+
+                      信息化项目复用，减少中后台表格、表单、查询页的重复建设成本。
+                    </li>
+                    <li>
+                      建设
+                      <span class="green">@hg-info/ui-kit-mobile</span>
+                      移动端组件库，围绕 H5
+                      页面容器、反馈态、弹层交互、表单输入等高频移动场景沉淀统一组件规范，支撑员工自助、入职采集、访客等移动端流程快速交付。
+                    </li>
+                  </ul>
+                  <ul>
+                    <li>
+                      参与
+                      <span class="green">@hg-info/toolset</span>
+                      工程工具链建设，包含 presets 统一
+                      ESLint/Prettier/Babel/Stylelint 规范、create-app 7
+                      套项目模板、release-cli 与文档部署工具，支撑 40+
+                      业务仓库标准化开发，降低新项目初始化和规范接入成本。
+                    </li>
+                    <li>
+                      推动部署工具链从
+                      <span class="green">@hg-info/ssh-cli</span> 文档 scp
+                      发布演进到 <span class="green">web-deploy</span>（SDK /
+                      CLI / MCP）静态站点发布工具，支持
+                      deploy/list/delete、manifest 多站点管理、JSON 输出与 MCP
+                      Tool 调用，使 AI Agent 可完成构建、部署、返回 URL
+                      的闭环，提升静态站点发布和交付确认效率。
+                    </li>
+                    <li>
+                      负责信息化前端项目
+                      <span class="green">Sentry</span>
+                      告警体系建设，统一错误监控接入、告警规则与责任触达，并结合
+                      Webhook 实现飞书消息推送，提升线上异常发现与响应效率。
+                    </li>
+                    <li>
+                      在移动端组件库中引入 Cursor Rules /
+                      Skills，将测试覆盖、API 文档、Demo 编写、Changelog
+                      和代码审查标准沉淀为 AI 可执行规范，提升组件迭代一致性与
+                      AI 辅助开发质量。
+                    </li>
+                    <li>
+                      沉淀地图与可视化能力：<span class="green"
+                        >@hg-info/office-map</span
+                      >
+                      封装 X6 楼层工位图，<span class="green"
+                        >@hg-info/org-structure-graph</span
+                      >
+                      封装 G6 组织架构图，<span class="green"
+                        >@hg-info/amap</span
+                      >
+                      统一高德地图接入，支撑行政空间管理、人事组织管理和地图类业务复用，降低复杂可视化场景重复建设成本。
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="page page-2"
+        contenteditable="true"
+        aria-label="简历第二页"
+      >
+        <div class="stacked-section">
+          <div class="section-title single"><span>过往经历</span></div>
+
+          <div class="work-section">
+            <article>
+              <div class="job-head">
+                <img
+                  class="logo wide"
+                  src="resume-assets/image-07.png"
+                  alt="找钢网"
+                />
+                <div>
+                  <div class="company">找钢网</div>
+                  <div class="position">前端开发工程师</div>
+                  <div class="date">2019.07 - 2022.01</div>
+                </div>
+                <span class="tag">工作</span>
+              </div>
+
+              <p class="intro">
+                于找钢网参与 <span class="green">找钢电商业务</span>、<span
+                  class="green"
+                  >胖猫云 SaaS</span
+                >
+                及移动端 H5 前端开发，覆盖 IM 通信、微前端脚手架、组件库、App
+                内嵌页与运营活动等方向。
+              </p>
+
+              <div class="role">
+                <img
+                  class="mini-icon"
+                  src="resume-assets/image-01.jpeg"
+                  alt=""
+                />找钢 TeamTalk IM Web SDK
+                <span class="project-meta"
+                  >TypeScript / WebSocket / Protobuf</span
+                >
+              </div>
+              <ul>
+                <li>
+                  <strong>工作内容：</strong>负责 TeamTalk Web IM SDK
+                  维护与重构，基于 WebSocket + 自定义 TTHeader / Protobuf
+                  对接登录、消息收发
+                  ACK、历史消息、未读会话、已读回执与心跳保活等核心通信能力。
+                </li>
+                <li>
+                  <strong>工程亮点：</strong>将协议层与业务 API
+                  分层，封装强类型事件总线、请求响应配对、超时处理与指数退避自动重连，提升
+                  Web/H5 业务侧接入稳定性。
+                </li>
+                <li>
+                  <strong>业务结果：</strong>支持电商与 SaaS 双域接入，沉淀
+                  @胖猫智能客服机器人、问答机器人、图片解析及文本/语音/视频/文件/商品卡片/订单等多消息类型透传能力，打通商家与买家的交易通信链路。
+                </li>
+              </ul>
+
+              <div class="role">
+                <img
+                  class="mini-icon"
+                  src="resume-assets/image-04.png"
+                  alt=""
+                />胖猫云 SaaS、胖猫云微前端 CLI 脚手架
+                <span class="project-meta">React / TypeScript / 微前端</span>
+              </div>
+              <ul>
+                <li>
+                  <strong>工作内容：</strong>参与项目微前端改造和 CLI
+                  脚手架设计开发，使用 TypeScript + React 负责独立业务模块建设。
+                </li>
+                <li>
+                  <strong>业务结果：</strong
+                  >统一多项目依赖和编码风格，并参与团队基础 React UI
+                  组件库建设，降低新业务模块接入成本，支撑业务快速迭代。
+                </li>
+              </ul>
+
+              <div class="role">
+                <img
+                  class="mini-icon"
+                  src="resume-assets/image-03.png"
+                  alt=""
+                />找钢 App
+                <span class="project-meta">Vue / H5 / Native Bridge</span>
+              </div>
+              <ul>
+                <li>
+                  <strong>工作内容：</strong>负责 App 内嵌
+                  H5、运营平台与电商活动页开发，配合 Native 完成 Bridge
+                  交互与多端投放。
+                </li>
+                <li>
+                  <strong>业务结果：</strong>抽象高复用 Vue
+                  组件，复用到活动页、运营页与 App
+                  内嵌业务，提升多端投放页面交付效率。
+                </li>
+              </ul>
+
+              <div class="role">
+                <img
+                  class="mini-icon"
+                  src="resume-assets/image-04.png"
+                  alt=""
+                />胖猫云 App
+                <span class="project-meta">从 0 到 1 / Vue / H5</span>
+              </div>
+              <ul>
+                <li>
+                  <strong>工作内容：</strong>参与 App 从 0 到 1
+                  建设，负责项目搭建、通用 Vue 组件开发、Native Bridge
+                  对接与内嵌 H5 页面维护。
+                </li>
+                <li>
+                  <strong>业务结果：</strong
+                  >支撑多个功能模块按期上线，沉淀移动端 H5 与 Native
+                  协作模式，提升 App 内嵌页面交付稳定性。
+                </li>
+              </ul>
+            </article>
+
+            <article>
+              <div class="job-head">
+                <img
+                  class="logo"
+                  src="resume-assets/image-08.png"
+                  alt="DaoCloud"
+                />
+                <div>
+                  <div class="company">DaoCloud</div>
+                  <div class="position">前端开发</div>
+                  <div class="date">2018.08 - 2019.06</div>
+                </div>
+                <span class="tag">实习</span>
+              </div>
+
+              <p class="work-summary">
+                于 DaoCloud 参与 <span class="green">云原生服务平台</span> 与
+                <span class="green">统一告警平台</span>
+                前端开发，熟悉企业级中后台研发流程，并参与公司 CNCF
+                相关开源计划。
+              </p>
+
+              <div class="role">
+                <img
+                  class="mini-icon"
+                  src="resume-assets/image-09.png"
+                  alt=""
+                />DaoCloud Service Platform 云原生服务平台
+                <span class="project-meta">Vue / 中后台</span>
+              </div>
+              <ul>
+                <li>
+                  <strong>工作内容：</strong
+                  >参与需求拆解、后端接口联调与页面开发，按设计稿和功能需求完成云原生服务平台模块交付。
+                </li>
+                <li>
+                  <strong>业务结果：</strong
+                  >按需求完成云原生服务平台模块交付，建立企业级中后台开发流程认知，熟悉前后端分离、接口联调和页面交付规范。
+                </li>
+              </ul>
+
+              <div class="role">
+                <img
+                  class="logo wide"
+                  src="resume-assets/image-10.png"
+                  alt=""
+                />DaoCloud Alert One 统一告警平台
+                <span class="project-meta">Vue / Vuex / Vue Router</span>
+              </div>
+              <ul>
+                <li>
+                  <strong>工作内容：</strong>使用 Vue、Vuex、Vue Router
+                  参与统一告警平台前端开发，完成业务页面、状态流转与接口数据展示。
+                </li>
+                <li>
+                  <strong>业务结果：</strong
+                  >完成统一告警平台业务页面与状态流转展示，积累监控告警类中后台产品经验，提升复杂表单、列表和状态型页面交付能力。
+                </li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="page page-3"
+        contenteditable="true"
+        aria-label="简历第三页"
+      >
+        <div class="stacked-section">
+          <div class="section-title single"><span>开源与个人实践</span></div>
+
+          <p class="intro">
+            以下为早期沉淀的开源组件与工程实践，主要用于补充移动端组件、构建工具和全栈基础能力:
+          </p>
+
+          <div class="projects-grid">
+            <article>
+              <div class="project">移动端地址选择器组件</div>
+              <ul>
+                <li>
+                  维护 v-area-picker、react-area-picker 等移动端 H5
+                  地址选择器组件，覆盖 Vue 与 React 技术栈。
+                </li>
+                <li>
+                  支持按需加载、Hooks 调用和 TypeScript
+                  类型约束，沉淀移动端表单组件封装经验。
+                </li>
+              </ul>
+
+              <div class="project">
+                PostCSS Plugin： postcss-plugin-border-1px
+              </div>
+              <ul>
+                <li>
+                  基于 PostCSS 8 封装移动端一像素边框处理插件，根据 DPR
+                  生成兼容不同屏幕的样式规则。
+                </li>
+                <li>
+                  通过插件化方式解决重复样式问题，积累 CSS
+                  工程化与构建链路扩展经验。
+                </li>
+              </ul>
+            </article>
+
+            <article>
+              <div class="project">文本截断与图片导出组件</div>
+              <ul>
+                <li>
+                  维护 v-text-ellipsis、canvastoimg
+                  等轻量工具组件，覆盖多行文本截断、Canvas 图片导出和 DPR
+                  清晰度适配。
+                </li>
+                <li>
+                  使用 Rollup 打包并发布 npm
+                  包，关注组件体积、使用方式和跨浏览器兼容体验。
+                </li>
+              </ul>
+
+              <div class="project">
+                <img
+                  class="mini-icon"
+                  src="resume-assets/image-05.jpeg"
+                  alt=""
+                />全栈聊天 Web App
+              </div>
+              <ul>
+                <li>
+                  基于 Koa.js、MySQL、Sequelize、JWT 与 WebSocket
+                  实现登录鉴权、RESTful API 和实时消息推送。
+                </li>
+                <li>
+                  使用 Vue、Vuex、Vue Router 与 Element UI 构建前端页面，补充
+                  Node.js、数据库与实时通信基础实践。
+                </li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <div class="section-title single skill-section-title">
+          <span>技能</span>
+        </div>
+
+        <div class="two-columns" style="margin-top: 0">
+          <article>
+            <h2 class="skill-title">前端业务交付</h2>
+            <ul>
+              <li>
+                长期使用 React、TypeScript 建设企业级中后台、H5
+                与活动页，具备复杂表单、审批流、权限、报表、驾驶舱等业务场景落地经验。
+              </li>
+              <li>
+                熟悉 Vue、React
+                生态及组件化开发模式，能够根据项目阶段和团队技术栈完成新系统搭建、存量系统维护与跨端页面交付。
+              </li>
+              <li>
+                熟悉 JavaScript / ES6+、HTML、CSS、Sass、Tailwind CSS
+                等基础能力，能够处理 PC/H5
+                适配、动效还原、性能优化与浏览器兼容问题。
+              </li>
+            </ul>
+
+            <h2 class="skill-title">工程化与平台能力</h2>
+            <ul>
+              <li>
+                熟悉 Webpack、Rollup、Rsbuild、Vite 等构建工具及
+                ESLint、Prettier、Stylelint
+                等规范体系，具备脚手架、模板、构建配置和发布工具建设经验。
+              </li>
+              <li>
+                具备 Monorepo、多应用工程、共享包拆分与版本发布经验，能够沉淀
+                service、http-client、UI、Hooks 等公共能力并支撑多业务复用。
+              </li>
+              <li>
+                参与建设 release-cli、web-deploy、MCP Tool
+                等工具链，关注从项目初始化、质量校验、文档部署到静态站点发布的研发闭环。
+              </li>
+            </ul>
+
+            <h2 class="skill-title">组件库与设计体系</h2>
+            <ul>
+              <li>
+                具备 B
+                端与移动端组件库体系化建设经验，能够围绕表格查询、动态表单、弹层反馈、页面容器等高频业务场景抽象通用组件，支撑多项目一致性复用。
+              </li>
+              <li>
+                能够围绕组件
+                API、Demo、文档、Changelog、测试覆盖和发布流程建立可复用、可维护的组件交付规范。
+              </li>
+            </ul>
+          </article>
+
+          <article>
+            <h2 class="skill-title">微前端与中后台架构</h2>
+            <ul>
+              <li>
+                熟悉 Qiankun
+                微前端接入、子应用容器、全局状态、路由集成与权限控制，具备多业务子应用统一承载和治理经验。
+              </li>
+              <li>
+                熟悉
+                RBAC、组织树、资源树、数据权限、i18n、审批流等企业信息化常见模型，能够独立拆解复杂业务域并推动前后端协作落地。
+              </li>
+            </ul>
+
+            <h2 class="skill-title">可视化与多端能力</h2>
+            <ul>
+              <li>
+                具备
+                X6、G6、ECharts、高德地图等可视化场景实践经验，参与沉淀办公地图、组织架构图和地图接入等通用组件能力。
+              </li>
+              <li>
+                熟悉移动端 H5、Native
+                Bridge、飞书免登、多语言、静态资源独立部署等多端集成场景，能够支撑国内外业务页面交付。
+              </li>
+            </ul>
+
+            <h2 class="skill-title">质量保障与工程协作</h2>
+            <ul>
+              <li>
+                熟悉 Git
+                Flow、代码审查、版本管理、接口联调、灰度发布与线上问题定位流程，能够独立分析、解决并复盘复杂问题。
+              </li>
+              <li>
+                具备 Sentry 告警、飞书 Webhook
+                通知、错误监控接入经验，关注线上异常发现、责任触达和响应效率。
+              </li>
+              <li>
+                关注 AI 辅助研发实践，能够通过 Cursor Rules / Skills
+                将测试、文档、变更记录和审查标准沉淀为可执行规范。
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+  </body>
+</html>

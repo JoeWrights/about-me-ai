@@ -1,0 +1,40 @@
+{
+  "name": "@about-me-ai/floating-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/esm/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "father build && tsc -p tsconfig.build.json",
+    "dev": "dumi dev",
+    "docs:build": "dumi build",
+    "lint": "biome check src",
+    "test": "node --import tsx --loader ./test/less-loader.mjs --test test/*.test.ts test/*.test.tsx",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.16",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "dumi": "latest",
+    "father": "latest",
+    "less": "latest",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}
