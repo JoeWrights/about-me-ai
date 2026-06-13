@@ -1,3 +1,6 @@
+import { request as httpRequest } from "node:http";
+import { request as httpsRequest } from "node:https";
+import type { IncomingMessage } from "node:http";
 import { Injectable } from "@nestjs/common";
 import type { ChatMessage } from "./prompt.js";
 
@@ -28,26 +31,18 @@ export class OpenAiCompatibleLlmClient implements LlmClient {
       throw new Error("LLM is not configured");
     }
 
-    const response = await fetch(
-      `${baseUrl.replace(/\/$/, "")}/chat/completions`,
-      {
-        body: JSON.stringify(
-          buildOpenAiRequestBody({ maxTokens, messages, model }),
-        ),
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        signal,
-      },
-    );
+    const response = await requestOpenAiStream({
+      apiKey,
+      body: buildOpenAiRequestBody({ maxTokens, messages, model }),
+      signal,
+      url: new URL(`${baseUrl.replace(/\/$/, "")}/chat/completions`),
+    });
 
-    if (!response.ok || !response.body) {
-      throw new Error(`LLM request failed with status ${response.status}`);
+    if (!response.statusCode || response.statusCode < 200 || response.statusCode >= 300) {
+      throw new Error(`LLM request failed with status ${response.statusCode}`);
     }
 
-    yield* parseOpenAiStream(response.body);
+    yield* parseOpenAiStream(response);
   }
 }
 
@@ -71,13 +66,58 @@ export function buildOpenAiRequestBody({
   };
 }
 
+type RequestOpenAiStreamInput = {
+  apiKey: string;
+  body: ReturnType<typeof buildOpenAiRequestBody>;
+  signal?: AbortSignal;
+  url: URL;
+};
+
+function requestOpenAiStream({
+  apiKey,
+  body,
+  signal,
+  url,
+}: RequestOpenAiStreamInput) {
+  const requestBody = JSON.stringify(body);
+  const request = url.protocol === "http:" ? httpRequest : httpsRequest;
+
+  return new Promise<IncomingMessage>((resolve, reject) => {
+    const clientRequest = request(
+      url,
+      buildOpenAiRequestOptions(apiKey, requestBody, signal),
+      resolve,
+    );
+
+    clientRequest.on("error", reject);
+    clientRequest.end(requestBody);
+  });
+}
+
+export function buildOpenAiRequestOptions(
+  apiKey: string,
+  requestBody: string,
+  signal?: AbortSignal,
+) {
+  return {
+    family: 4,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Length": Buffer.byteLength(requestBody),
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    signal,
+  };
+}
+
 export async function* parseOpenAiStream(
-  body: ReadableStream<Uint8Array>,
+  body: AsyncIterable<Uint8Array>,
 ): AsyncIterable<string> {
   const decoder = new TextDecoder();
   let buffer = "";
 
-  for await (const chunk of body as AsyncIterable<Uint8Array>) {
+  for await (const chunk of body) {
     buffer += decoder.decode(chunk, { stream: true });
     const lines = buffer.split("\n");
     buffer = lines.pop() ?? "";

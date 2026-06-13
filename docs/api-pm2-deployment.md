@@ -479,7 +479,7 @@ curl -4 -I https://api.deepseek.com/v1 --connect-timeout 5 --max-time 10
 curl -6 -I https://api.deepseek.com/v1 --connect-timeout 5 --max-time 10
 ```
 
-如果 `curl -4` 稳定成功而 `curl -6` 失败，说明服务器 IPv6 链路不可用或不稳定。API 启动时已配置 Node DNS 优先 IPv4，更新代码后重新构建并重启：
+如果 `curl -4` 稳定成功而 `curl -6` 失败，说明服务器 IPv6 链路不可用或不稳定。LLM 客户端已对模型请求显式使用 IPv4 DNS lookup，更新代码后重新构建并重启：
 
 ```bash
 pnpm --filter @about-me-ai/api build
