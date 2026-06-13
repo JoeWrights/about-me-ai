@@ -14,6 +14,7 @@ export type StreamAnswerOptions = {
 @Injectable()
 export class ChatService {
   constructor(
+    @Inject(ResumeService)
     private readonly resumeService: ResumeService,
     @Inject(LLM_CLIENT)
     private readonly llmClient: LlmClient,

@@ -107,7 +107,7 @@ nano .env
 
 ```bash
 API_PORT=4000
-WEB_ORIGIN=http://117.72.118.82
+WEB_ORIGIN=http://117.72.118.82,http://localhost:3000
 TRUST_PROXY_HEADERS=true
 
 # 按你的 OpenAI 兼容 LLM 服务实际配置填写
@@ -121,6 +121,7 @@ OPENAI_COMPAT_MAX_TOKENS=600
 
 - 不要把 `.env` 提交到 Git。
 - `TRUST_PROXY_HEADERS=true` 用于让限流逻辑优先识别 Nginx 传来的真实客户端 IP。
+- `WEB_ORIGIN` 支持逗号分隔的多个来源；如果需要本地 Web 直连服务器 API，保留 `http://localhost:3000`。
 - 如果前端将来换成域名，记得同步更新 `WEB_ORIGIN`。
 
 ## 安装依赖与构建
