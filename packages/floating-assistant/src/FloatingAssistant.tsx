@@ -287,7 +287,15 @@ function createMessage(
 ): ChatMessage {
   return {
     content,
-    id: crypto.randomUUID(),
+    id: createMessageId(),
     role,
   };
+}
+
+export function createMessageId() {
+  if (globalThis.crypto?.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return `about-me-ai-message-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }

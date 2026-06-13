@@ -1,6 +1,6 @@
-# about-me-ai API PM2 部署文档
+# about-me-ai 前后端部署文档
 
-本文档用于把 `apps/api` 服务部署到云服务器 `117.72.118.82`，并通过公网路径 `http://117.72.118.82/api/about-me-ai` 暴露接口。
+本文档用于把 `apps/web` 前端页面和 `apps/api` 服务部署到云服务器 `117.72.118.82`。前端页面通过 `http://117.72.118.82/` 访问，API 通过公网路径 `http://117.72.118.82/api/about-me-ai` 暴露。
 
 ## 部署目标
 
@@ -12,7 +12,7 @@
 - 反向代理：`nginx`
 - API 本机监听：`127.0.0.1:4000`
 - 公网访问前缀：`/api/about-me-ai`
-- 前端公网入口：预留根路径 `/`
+- 前端公网入口：根路径 `/`
 
 当前 API 内部路由是 `POST /api/chat`。部署后建议通过 Nginx 去掉 `/api/about-me-ai` 前缀再转发，因此公网接口为：
 
@@ -27,7 +27,7 @@ POST http://117.72.118.82/api/about-me-ai/chat
 - PM2 只负责在服务器本机启动和守护 `apps/api` 服务。
 - Nginx 负责公网入口、前端静态资源、API 路径前缀转发、SSE 流式响应配置，以及隐藏 Node.js 服务端口。
 - 不修改现有 Nest 路由，避免把部署路径耦合进业务代码。
-- 前端预留在根路径 `/`，后续执行 `pnpm --filter @about-me-ai/web build` 后即可由 Nginx 托管 `apps/web/dist`。
+- 前端部署在根路径 `/`，执行 `pnpm --filter @about-me-ai/web build` 后由 Nginx 托管 `apps/web/dist`。
 
 ## 服务器初始化
 
@@ -134,46 +134,32 @@ OPENAI_COMPAT_IPV4_ADDRESSES=
 cd /opt/www/about-me-ai
 pnpm install --frozen-lockfile
 pnpm --filter @about-me-ai/api build
+pnpm --filter @about-me-ai/floating-assistant build
+pnpm --filter @about-me-ai/web build
 ```
 
-构建产物会生成在：
+API 构建产物会生成在：
 
 ```text
 apps/api/dist
 ```
 
-如果需要同时预构建前端，可以额外执行：
-
-```bash
-pnpm --filter @about-me-ai/web build
-```
-
-前端构建产物默认生成在：
+前端构建产物会生成在：
 
 ```text
 apps/web/dist
 ```
 
-当前 Nginx 配置已经把根路径 `/` 预留给该目录；如果暂时不部署前端，不影响 `/api/about-me-ai` 下的 API 访问。
+其中 `apps/web` 依赖 workspace 内部包 `@about-me-ai/floating-assistant`，所以必须先构建 `packages/floating-assistant`。如果直接执行 `pnpm --filter @about-me-ai/web build`，可能会因为 `packages/floating-assistant/dist` 不存在而报 `Module not found: Can't resolve '@about-me-ai/floating-assistant'`。
 
-如果本次只部署 API，也建议先创建一个前端占位页，避免访问根路径时没有明确响应：
+确认前端入口文件存在：
 
 ```bash
-mkdir -p apps/web/dist
-cat > apps/web/dist/index.html <<'EOF'
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <title>About Me AI</title>
-  </head>
-  <body>
-    <h1>About Me AI</h1>
-    <p>Frontend is reserved. API is available under /api/about-me-ai.</p>
-  </body>
-</html>
-EOF
+ls -lh apps/web/dist
+test -f apps/web/dist/index.html
 ```
+
+当前前端页面中的 AI 助手接口地址已经指向 `http://117.72.118.82/api/about-me-ai/chat`。如果后续改为域名或 HTTPS，需要同步更新前端接口地址并重新构建前端。
 
 ## 使用 PM2 启动 API
 
@@ -246,7 +232,7 @@ server {
         return 301 /api/about-me-ai/;
     }
 
-    # 前端预留入口：构建 apps/web 后，根路径会返回前端页面。
+    # 前端入口：托管 apps/web/dist，并让前端路由回落到 index.html。
     location / {
         try_files $uri $uri/ /index.html;
     }
@@ -284,7 +270,7 @@ curl -i -X POST http://127.0.0.1:4000/api/chat \
   -d '{"question":"你的联系方式是什么？"}'
 ```
 
-再验证公网代理：
+再验证公网 API 代理：
 
 ```bash
 curl -i -X POST http://117.72.118.82/api/about-me-ai/chat \
@@ -300,6 +286,20 @@ data: {"type":"status","message":"正在匹配简历经历"}
 data: {"type":"status","message":"正在组织回答"}
 ```
 
+最后验证前端页面：
+
+```bash
+curl -I http://117.72.118.82/
+```
+
+浏览器访问：
+
+```text
+http://117.72.118.82/
+```
+
+成功时应看到 About Me AI 页面，右下角 AI 助手可以正常打开并向 `/api/about-me-ai/chat` 发起请求。
+
 ## 后续更新发布
 
 每次更新代码后，在服务器执行：
@@ -309,14 +309,23 @@ cd /opt/www/about-me-ai
 git pull
 pnpm install --frozen-lockfile
 pnpm --filter @about-me-ai/api build
+pnpm --filter @about-me-ai/floating-assistant build
+pnpm --filter @about-me-ai/web build
 pm2 restart about-me-ai-api --update-env
+nginx -t
+systemctl reload nginx
 pm2 save
 ```
 
-如果本次也更新前端，增加前端构建命令：
+如果本次只更新前端，可以只执行：
 
 ```bash
+cd /opt/www/about-me-ai
+git pull
+pnpm install --frozen-lockfile
+pnpm --filter @about-me-ai/floating-assistant build
 pnpm --filter @about-me-ai/web build
+nginx -t
 systemctl reload nginx
 ```
 
@@ -324,6 +333,7 @@ systemctl reload nginx
 
 ```bash
 pm2 status
+curl -I http://117.72.118.82/
 curl -i -X POST http://117.72.118.82/api/about-me-ai/chat \
   -H "Content-Type: application/json" \
   -d '{"question":"请简单介绍一下你"}'
@@ -461,6 +471,72 @@ proxy_pass http://127.0.0.1:4000/api/;
 ```
 
 这个配置会把公网 `/api/about-me-ai/chat` 转发为本机 `/api/chat`。
+
+### 前端页面返回 403 或 404
+
+确认前端已经构建，并且 Nginx 的 `root` 指向构建产物目录：
+
+```bash
+cd /opt/www/about-me-ai
+pnpm --filter @about-me-ai/floating-assistant build
+pnpm --filter @about-me-ai/web build
+ls -lh apps/web/dist
+test -f apps/web/dist/index.html
+nginx -t
+systemctl reload nginx
+```
+
+如果 `index.html` 存在但仍然访问失败，检查 Nginx 配置中是否包含：
+
+```nginx
+root /opt/www/about-me-ai/apps/web/dist;
+
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```
+
+### 前端构建提示找不到 floating-assistant
+
+如果执行前端构建时报：
+
+```text
+Module not found: Can't resolve '@about-me-ai/floating-assistant'
+```
+
+说明 `apps/web` 依赖的 workspace 内部包还没有生成 `dist`。先构建内部包，再构建前端：
+
+```bash
+cd /opt/www/about-me-ai
+pnpm install --frozen-lockfile
+pnpm --filter @about-me-ai/floating-assistant build
+pnpm --filter @about-me-ai/web build
+```
+
+如果仍然报同样错误，确认服务器上的代码目录包含内部包：
+
+```bash
+ls packages/floating-assistant
+test -f packages/floating-assistant/package.json
+```
+
+### 前端页面能打开但 AI 助手请求失败
+
+打开浏览器开发者工具查看 Network。如果请求地址不是：
+
+```text
+http://117.72.118.82/api/about-me-ai/chat
+```
+
+需要更新前端代码中的接口地址，然后重新构建：
+
+```bash
+pnpm --filter @about-me-ai/floating-assistant build
+pnpm --filter @about-me-ai/web build
+systemctl reload nginx
+```
+
+如果请求地址正确但返回 502 或 404，按 API 代理排障步骤继续检查 PM2 和 Nginx。
 
 ### SSE 响应被一次性返回或长时间无输出
 

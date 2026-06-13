@@ -4,6 +4,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { createMessageId } from "../src/FloatingAssistant.js";
 import { FloatingAssistant } from "../src/index.js";
 
 const stylesPath = fileURLToPath(
@@ -30,4 +31,22 @@ test("FloatingAssistant uses compact chat-first panel spacing", () => {
   assert.match(styles, /--assistant-message-padding:\s*0\.75rem 1rem/);
   assert.match(styles, /--assistant-textarea-min-height:\s*3\.25rem/);
   assert.match(styles, /grid-template-rows:\s*auto minmax\(0, 1fr\) auto/);
+});
+
+test("createMessageId falls back when crypto.randomUUID is unavailable", () => {
+  const originalCrypto = globalThis.crypto;
+
+  Object.defineProperty(globalThis, "crypto", {
+    configurable: true,
+    value: {},
+  });
+
+  try {
+    assert.match(createMessageId(), /^about-me-ai-message-\d+-[a-z0-9]+$/);
+  } finally {
+    Object.defineProperty(globalThis, "crypto", {
+      configurable: true,
+      value: originalCrypto,
+    });
+  }
 });
