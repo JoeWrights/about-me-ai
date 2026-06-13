@@ -58,7 +58,7 @@ export function App() {
           ))}
         </div>
       </section>
-      <FloatingAssistant apiUrl="http://117.72.118.82/api/about-me-ai/chat" />
+      <FloatingAssistant apiUrl="http://localhost:4000/api/chat" />
     </main>
   );
 }

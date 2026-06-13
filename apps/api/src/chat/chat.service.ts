@@ -38,7 +38,8 @@ export class ChatService {
       })) {
         yield { text, type: "delta" };
       }
-    } catch {
+    } catch (error) {
+      console.error("LLM chat failed", error);
       yield {
         text: "这个问题我无法从简历中确认，但可以帮你总结简历里已有的经历、技能和项目亮点。",
         type: "delta",

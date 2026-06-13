@@ -279,7 +279,7 @@ systemctl reload nginx
 ```bash
 curl -i -X POST http://127.0.0.1:4000/api/chat \
   -H "Content-Type: application/json" \
-  -d '{"question":"你是谁？"}'
+  -d '{"question":"你的联系方式是什么？"}'
 ```
 
 再验证公网代理：
@@ -287,7 +287,7 @@ curl -i -X POST http://127.0.0.1:4000/api/chat \
 ```bash
 curl -i -X POST http://117.72.118.82/api/about-me-ai/chat \
   -H "Content-Type: application/json" \
-  -d '{"question":"你是谁？"}'
+  -d '{"question":"你的联系方式是什么？"}'
 ```
 
 成功时应看到 `Content-Type: text/event-stream`，响应体会以 SSE 格式返回：
