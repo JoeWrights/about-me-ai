@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Optional } from "@nestjs/common";
 
 type RateLimitBucket = {
   dayCount: number;
@@ -34,7 +34,7 @@ export class RateLimitService {
   private readonly buckets = new Map<string, RateLimitBucket>();
   private readonly now: () => number;
 
-  constructor(private readonly options = readOptionsFromEnv()) {
+  constructor(@Optional() private readonly options = readOptionsFromEnv()) {
     this.now = options.now ?? Date.now;
   }
 

@@ -37,17 +37,18 @@ POST http://117.72.118.82/api/about-me-ai/chat
 ssh root@117.72.118.82
 ```
 
-更新系统包：
+更新系统包。CentOS 7 常用 `yum`，CentOS 8/Stream 常用 `dnf`，下面以 `yum` 为例：
 
 ```bash
-apt update
-apt upgrade -y
+yum update -y
 ```
 
 安装基础工具：
 
 ```bash
-apt install -y git curl nginx
+yum install -y git curl nginx
+systemctl enable nginx
+systemctl start nginx
 ```
 
 安装 Node.js 20。任选一种方式即可，推荐使用 `nvm`，方便后续升级：
@@ -205,10 +206,12 @@ pm2 save
 
 ## 配置 Nginx 反向代理
 
+CentOS 的 Nginx 通常没有 `sites-available/` 和 `sites-enabled/` 目录，而是直接读取 `/etc/nginx/conf.d/*.conf`。
+
 新增 Nginx 配置：
 
 ```bash
-nano /etc/nginx/sites-available/about-me-ai-api
+nano /etc/nginx/conf.d/about-me-ai-api.conf
 ```
 
 写入以下内容：
@@ -247,24 +250,23 @@ server {
 }
 ```
 
-启用配置：
+检查并重载配置：
 
 ```bash
-ln -s /etc/nginx/sites-available/about-me-ai-api /etc/nginx/sites-enabled/about-me-ai-api
 nginx -t
 systemctl reload nginx
 ```
 
-如果服务器默认站点占用了相同 `server_name` 或产生冲突，可以先检查：
+如果 `nginx -t` 提示 `server_name` 冲突，先检查已有配置：
 
 ```bash
-ls /etc/nginx/sites-enabled
+ls /etc/nginx/conf.d
+ls /etc/nginx/default.d
 ```
 
-必要时移除默认站点软链接：
+必要时编辑或移除冲突的默认配置文件，然后重新检查并重载：
 
 ```bash
-rm /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
 ```
@@ -370,17 +372,65 @@ systemctl reload nginx
 
 ## 防火墙检查
 
-如果云服务器启用了系统防火墙，放行 HTTP：
+如果云服务器启用了 `firewalld`，放行 HTTP：
 
 ```bash
-ufw allow 80/tcp
-ufw reload
-ufw status
+firewall-cmd --permanent --add-service=http
+firewall-cmd --reload
+firewall-cmd --list-all
 ```
 
 同时确认云厂商安全组已放行入站 `80` 端口。
 
 ## 排障
+
+### 本机 4000 端口连接被拒绝
+
+如果执行本机验证时出现：
+
+```text
+curl: (7) Failed to connect to 127.0.0.1 port 4000: Connection refused
+```
+
+说明 API 服务没有在 `4000` 端口监听。先检查 PM2 进程：
+
+```bash
+pm2 status
+pm2 logs about-me-ai-api --lines 100
+```
+
+再检查端口监听：
+
+```bash
+ss -lntp | grep 4000
+```
+
+如果 PM2 中没有 `about-me-ai-api`，重新启动：
+
+```bash
+cd /opt/www/about-me-ai
+pnpm --filter @about-me-ai/api build
+pm2 start apps/api/dist/main.js \
+  --name about-me-ai-api \
+  --cwd /opt/www/about-me-ai \
+  --time
+```
+
+如果 PM2 状态是 `errored` 或反复重启，优先看日志里的第一条错误。常见原因包括：
+
+- 没有执行 `pnpm install --frozen-lockfile`
+- 没有执行 `pnpm --filter @about-me-ai/api build`
+- `.env` 不在 `/opt/www/about-me-ai/.env`
+- `API_PORT` 不是 `4000`
+- 当前 Node.js 版本低于 `20.19.0`
+
+如果 `.env` 里配置了其他端口，例如 `API_PORT=4100`，本机验证命令也要同步改成对应端口：
+
+```bash
+curl -i -X POST http://127.0.0.1:4100/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"question":"你是谁？"}'
+```
 
 ### 访问 502 Bad Gateway
 

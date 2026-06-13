@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Optional } from "@nestjs/common";
 
 const defaultResumePath = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -10,7 +10,7 @@ const defaultResumePath = resolve(
 
 @Injectable()
 export class ResumeService {
-  constructor(private readonly resumePath = defaultResumePath) {}
+  constructor(@Optional() private readonly resumePath = defaultResumePath) {}
 
   getResumeText() {
     return cleanResumeHtml(readFileSync(this.resumePath, "utf8"));

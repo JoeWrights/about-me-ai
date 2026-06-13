@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { ResumeService } from "../resume/resume.service.js";
 import type { ChatEvent, ChatRequest } from "./chat.types.js";
+import { LLM_CLIENT } from "./llm-client.js";
 import type { LlmClient } from "./llm-client.js";
 import { buildResumePrompt } from "./prompt.js";
 
@@ -14,6 +15,7 @@ export type StreamAnswerOptions = {
 export class ChatService {
   constructor(
     private readonly resumeService: ResumeService,
+    @Inject(LLM_CLIENT)
     private readonly llmClient: LlmClient,
   ) {}
 

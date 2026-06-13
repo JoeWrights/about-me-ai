@@ -14,14 +14,7 @@ import { LLM_CLIENT, OpenAiCompatibleLlmClient } from "./llm-client.js";
       provide: LLM_CLIENT,
       useClass: OpenAiCompatibleLlmClient,
     },
-    {
-      inject: [ResumeService, LLM_CLIENT],
-      provide: ChatService,
-      useFactory: (
-        resumeService: ResumeService,
-        llmClient: OpenAiCompatibleLlmClient,
-      ) => new ChatService(resumeService, llmClient),
-    },
+    ChatService,
   ],
 })
 export class ChatModule {}
