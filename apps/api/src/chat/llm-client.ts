@@ -1,3 +1,4 @@
+import { resolve4 } from "node:dns/promises";
 import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
 import type { IncomingMessage } from "node:http";
@@ -73,19 +74,90 @@ type RequestOpenAiStreamInput = {
   url: URL;
 };
 
-function requestOpenAiStream({
+async function requestOpenAiStream(input: RequestOpenAiStreamInput) {
+  const addresses = await resolveIpv4Addresses(input.url);
+  const targets = buildOpenAiRequestTargets(input.url, addresses);
+  return requestOpenAiStreamWithRetry(input, targets);
+}
+
+export type OpenAiRequestTarget = {
+  hostHeader?: string;
+  servername?: string;
+  url: URL;
+};
+
+export function buildOpenAiRequestTargets(
+  url: URL,
+  addresses: string[],
+): OpenAiRequestTarget[] {
+  if (addresses.length === 0) {
+    return [{ url }];
+  }
+
+  return addresses.map((address) => {
+    const targetUrl = new URL(url.toString());
+    targetUrl.hostname = address;
+
+    return {
+      hostHeader: url.host,
+      servername: url.hostname,
+      url: targetUrl,
+    };
+  });
+}
+
+async function resolveIpv4Addresses(url: URL) {
+  try {
+    return await resolve4(url.hostname);
+  } catch {
+    return [];
+  }
+}
+
+type SendOpenAiRequestInput = RequestOpenAiStreamInput & {
+  target: OpenAiRequestTarget;
+};
+
+type SendOpenAiRequest = (
+  input: SendOpenAiRequestInput,
+) => Promise<IncomingMessage>;
+
+export async function requestOpenAiStreamWithRetry(
+  input: RequestOpenAiStreamInput,
+  targets: OpenAiRequestTarget[],
+  sendRequest: SendOpenAiRequest = sendOpenAiRequest,
+) {
+  let lastError: unknown;
+
+  for (const target of targets) {
+    try {
+      return await sendRequest({ ...input, target });
+    } catch (error) {
+      if (input.signal?.aborted) {
+        throw error;
+      }
+      lastError = error;
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("LLM request failed before receiving a response");
+}
+
+function sendOpenAiRequest({
   apiKey,
   body,
   signal,
-  url,
-}: RequestOpenAiStreamInput) {
+  target,
+}: SendOpenAiRequestInput) {
   const requestBody = JSON.stringify(body);
-  const request = url.protocol === "http:" ? httpRequest : httpsRequest;
+  const request = target.url.protocol === "http:" ? httpRequest : httpsRequest;
 
   return new Promise<IncomingMessage>((resolve, reject) => {
     const clientRequest = request(
-      url,
-      buildOpenAiRequestOptions(apiKey, requestBody, signal),
+      target.url,
+      buildOpenAiRequestOptions(apiKey, requestBody, signal, target),
       resolve,
     );
 
@@ -98,6 +170,7 @@ export function buildOpenAiRequestOptions(
   apiKey: string,
   requestBody: string,
   signal?: AbortSignal,
+  target?: OpenAiRequestTarget,
 ) {
   return {
     family: 4,
@@ -105,8 +178,10 @@ export function buildOpenAiRequestOptions(
       Authorization: `Bearer ${apiKey}`,
       "Content-Length": Buffer.byteLength(requestBody),
       "Content-Type": "application/json",
+      ...(target?.hostHeader ? { Host: target.hostHeader } : {}),
     },
     method: "POST",
+    ...(target?.servername ? { servername: target.servername } : {}),
     signal,
   };
 }
