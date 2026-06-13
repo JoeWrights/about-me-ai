@@ -4,6 +4,8 @@ import {
   buildOpenAiRequestTargets,
   buildOpenAiRequestBody,
   buildOpenAiRequestOptions,
+  mergeConfiguredAndResolvedIpv4Addresses,
+  parseConfiguredIpv4Addresses,
   requestOpenAiStreamWithRetry,
 } from "../src/chat/llm-client.js";
 
@@ -43,7 +45,25 @@ test("buildOpenAiRequestOptions forces model requests to IPv4", () => {
     method: "POST",
     servername: "api.deepseek.com",
     signal,
+    timeout: 5000,
   });
+});
+
+test("parseConfiguredIpv4Addresses reads comma-separated IPv4 overrides", () => {
+  assert.deepEqual(
+    parseConfiguredIpv4Addresses("60.31.192.68, 123.6.42.82,,not-an-ip"),
+    ["60.31.192.68", "123.6.42.82"],
+  );
+});
+
+test("mergeConfiguredAndResolvedIpv4Addresses tries configured addresses first", () => {
+  assert.deepEqual(
+    mergeConfiguredAndResolvedIpv4Addresses(
+      ["60.31.192.68", "123.6.42.82"],
+      ["202.160.130.117", "60.31.192.68"],
+    ),
+    ["60.31.192.68", "123.6.42.82", "202.160.130.117"],
+  );
 });
 
 test("buildOpenAiRequestTargets replaces hostname with IPv4 addresses and preserves TLS identity", () => {

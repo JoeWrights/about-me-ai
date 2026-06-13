@@ -115,6 +115,8 @@ OPENAI_COMPAT_API_KEY=替换为你的密钥
 OPENAI_COMPAT_BASE_URL=https://api.openai.com/v1
 OPENAI_COMPAT_MODEL=替换为你的模型名称
 OPENAI_COMPAT_MAX_TOKENS=600
+# 可选：如果模型域名部分 IPv4 节点超时，填入 curl -4 验证可用的 IP，逗号分隔
+OPENAI_COMPAT_IPV4_ADDRESSES=
 ```
 
 注意：
@@ -479,7 +481,15 @@ curl -4 -I https://api.deepseek.com/v1 --connect-timeout 5 --max-time 10
 curl -6 -I https://api.deepseek.com/v1 --connect-timeout 5 --max-time 10
 ```
 
-如果 `curl -4` 稳定成功而 `curl -6` 失败，说明服务器 IPv6 链路不可用或不稳定。LLM 客户端已对模型请求解析多个 IPv4 A 记录，并在连接失败时切换到下一个地址，更新代码后重新构建并重启：
+如果 `curl -4` 稳定成功而 `curl -6` 失败，说明服务器 IPv6 链路不可用或不稳定。LLM 客户端已对模型请求解析多个 IPv4 A 记录，并在连接失败时切换到下一个地址。
+
+如果日志里仍然显示某些 IPv4 节点 `ETIMEDOUT`，可以把 `curl -4 -v` 验证过的可用 IP 写进 `.env`，让 API 优先尝试这些地址：
+
+```bash
+OPENAI_COMPAT_IPV4_ADDRESSES=60.31.192.68,123.6.42.82
+```
+
+更新配置后重新构建并重启：
 
 ```bash
 pnpm --filter @about-me-ai/api build

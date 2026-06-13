@@ -1,4 +1,5 @@
 import { resolve4 } from "node:dns/promises";
+import { isIP } from "node:net";
 import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
 import type { IncomingMessage } from "node:http";
@@ -75,7 +76,14 @@ type RequestOpenAiStreamInput = {
 };
 
 async function requestOpenAiStream(input: RequestOpenAiStreamInput) {
-  const addresses = await resolveIpv4Addresses(input.url);
+  const configuredAddresses = parseConfiguredIpv4Addresses(
+    process.env.OPENAI_COMPAT_IPV4_ADDRESSES,
+  );
+  const resolvedAddresses = await resolveIpv4Addresses(input.url);
+  const addresses = mergeConfiguredAndResolvedIpv4Addresses(
+    configuredAddresses,
+    resolvedAddresses,
+  );
   const targets = buildOpenAiRequestTargets(input.url, addresses);
   return requestOpenAiStreamWithRetry(input, targets);
 }
@@ -112,6 +120,22 @@ async function resolveIpv4Addresses(url: URL) {
   } catch {
     return [];
   }
+}
+
+export function parseConfiguredIpv4Addresses(value: string | undefined) {
+  return (
+    value
+      ?.split(",")
+      .map((address) => address.trim())
+      .filter((address) => isIP(address) === 4) ?? []
+  );
+}
+
+export function mergeConfiguredAndResolvedIpv4Addresses(
+  configuredAddresses: string[],
+  resolvedAddresses: string[],
+) {
+  return [...new Set([...configuredAddresses, ...resolvedAddresses])];
 }
 
 type SendOpenAiRequestInput = RequestOpenAiStreamInput & {
@@ -161,6 +185,9 @@ function sendOpenAiRequest({
       resolve,
     );
 
+    clientRequest.setTimeout(5000, () => {
+      clientRequest.destroy(new Error("LLM connection timed out"));
+    });
     clientRequest.on("error", reject);
     clientRequest.end(requestBody);
   });
@@ -183,6 +210,7 @@ export function buildOpenAiRequestOptions(
     method: "POST",
     ...(target?.servername ? { servername: target.servername } : {}),
     signal,
+    timeout: 5000,
   };
 }
 
