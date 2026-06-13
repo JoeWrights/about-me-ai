@@ -11,5 +11,73 @@
 
 body {
   margin: 0;
-  background: #fafaf9;
+  background: #f7f3ea;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+button {
+  font: inherit;
+}
+
+.ai-logo-mark {
+  animation: aiLogoFloat 4.8s ease-in-out infinite;
+  isolation: isolate;
+}
+
+.ai-logo-mark::before,
+.ai-logo-mark::after {
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+  position: absolute;
+}
+
+.ai-logo-mark::before {
+  inset: -7px;
+  border: 1px solid rgba(107, 76, 230, 0.28);
+  opacity: 0;
+  transform: scale(0.9);
+  animation: aiLogoPulse 2.8s ease-out infinite;
+}
+
+.ai-logo-mark::after {
+  inset: 0;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.32),
+    rgba(255, 255, 255, 0)
+  );
+  mix-blend-mode: screen;
+}
+
+@keyframes aiLogoPulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+
+  72%,
+  100% {
+    opacity: 0;
+    transform: scale(1.22);
+  }
+}
+
+@keyframes aiLogoFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-logo-mark,
+  .ai-logo-mark::before {
+    animation: none;
+  }
 }

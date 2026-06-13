@@ -1,4 +1,4 @@
-import React, {
+import {
   type FormEvent,
   useCallback,
   useEffect,
@@ -41,7 +41,7 @@ export function FloatingAssistant({
   brand = "About Me AI",
   className,
   description = "我可以根据简历回答技能、经历和项目相关问题。",
-  idleHint = "无需登录，已启用限流保护",
+  idleHint = "",
   launcherLabel = "AI",
   placeholder = "问任何与简历、项目、技能相关的问题",
   streamingHint = "正在回答...",
