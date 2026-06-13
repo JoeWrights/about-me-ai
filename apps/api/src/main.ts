@@ -1,9 +1,14 @@
 import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module.js";
-import { loadWorkspaceEnv, parseWebOrigins } from "./config/env.js";
+import {
+  configureDnsForOutboundRequests,
+  loadWorkspaceEnv,
+  parseWebOrigins,
+} from "./config/env.js";
 
 loadWorkspaceEnv();
+configureDnsForOutboundRequests();
 
 const port = Number(process.env.API_PORT ?? process.env.PORT ?? 4000);
 

@@ -1,3 +1,4 @@
+import { setDefaultResultOrder } from "node:dns";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { config } from "dotenv";
@@ -17,4 +18,8 @@ export function parseWebOrigins(value: string | undefined) {
     .filter(Boolean);
 
   return origins && origins.length > 0 ? origins : ["http://localhost:3000"];
+}
+
+export function configureDnsForOutboundRequests() {
+  setDefaultResultOrder("ipv4first");
 }
